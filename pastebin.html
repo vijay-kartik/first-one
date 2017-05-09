@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <style>
+    body {
+      background-color: HoneyDew;
+      font-family: cursive, Comic sans-serif;
+    }
+    button {
+        font-family: cursive, Comic sans-serif;
+        color: #900;
+        /*border: 1px solid #900;*/
+        font-weight: bold;
+        font-size: 16px;
+        background-color: WindowFrame;
+    }
+    a {
+      color: red;
+    }
+
+  </style>
+  <title>Pastebin app</title>
+  <body>
+    <h3>New paste</h3>
+
+      <textarea name="ta"  rows="15" cols="120" id ="userinput" placeholder="Begin here" ></textarea>
+      <br><br>
+      <button id="btn1"  ><i class="fa fa-paper-plane"></i>Submit</button>
+      <br><br>
+      <div id="div1"></div>
+      <a href="#" id="anchor" vlink="red"></a>
+      <div id="div2"></div>
+
+
+    <!--Ajax request-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js">
+    </script>
+    <script>
+
+
+    $(document).ready(function(){
+
+
+        function key_gen(data) {
+
+          $("#div1").html("Save this as your random key :")
+          $("#anchor").html("http://127.0.0.1:8083/" + data);
+        }
+
+        var str="";
+
+      $("#btn1").click(function(){
+
+        var inputdata = document.getElementById("userinput").value ;
+
+        $.post("/sendata",{
+          idata : inputdata
+        },
+        function (data, status){
+          str=data; // for the link to go to!!
+          key_gen(data);
+
+        });
+      });
+
+      $("#anchor").click(function(){
+         window.location.replace(str);
+
+       });
+    });
+
+    </script>
+  </body>
+</html>

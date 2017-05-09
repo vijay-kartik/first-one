@@ -1,0 +1,274 @@
+<html>
+
+  <style>
+    h1 {
+    color : red;
+      }
+
+    body{
+      font-family: monospace;
+      background-color: lightsteelblue;
+    }
+    input{
+      font-family: monospace;
+      font-size: 18;
+    }
+    button {
+      align : center;
+    }
+    caption {
+      font-family: cursive;
+      font-size: 24;
+
+    }
+    table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: left;
+}
+</style>
+
+   <head>
+      <title>The Club</title>
+   </head>
+
+  <body>
+      <style>
+      .indent-1 {float : left; width : 50%;}
+      .indent-2 {float : right; width : 50%;}
+      .indent-3 {float : left; width : 60%;}
+      .indent-4 {float : right; width : 40%;}
+
+      </style>
+
+      <h1><center>Welcome to the fitness club!</center></h1>
+      <br>
+<!-- This Section displays each one's share -->
+<section class="indent-4">
+  <h2> Grand total : <div id="gtotal"></div></h2>
+  <h3> Kartik's share : <div id="ktotal"></div></h3>
+  <h3> Sasank's share : <div id="stotal"></div></h3>
+  <h3> Yash's share : <div id="ytotal"></div></h3>
+</section>
+
+
+<!--Ajax request-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js">
+</script>
+
+<!-- for penalising -->
+<section class = "indent-3">
+
+
+    <br><input type="radio" value="Canteen" name="offence" id="kc" />  Kartik-canteen
+    <br><input type="radio" value="Running" name="offence" id="kr" />  Kartik-running
+    <br><input type="radio" value="Canteen" name="offence" id="yc" />  Yash-canteen
+    <br><input type="radio" value="Running" name="offence" id="yr" />  Yash-running
+    <br><input type="radio" value="Running" name="offence" id="sr" />  Sasank-running
+    <br><input type="radio" value="Canteen" name="offence" id="sc" />  Sasank-canteen
+
+  <br><br><button id="btncharge">Charge me</button>
+
+  <br><br><br><h1 align="center" id="error" color="green"></h1>
+
+</section>
+<section>
+  <!-- <button id="logbtn">Show Log</button> -->
+  <div id="here_table" align="center"></div>
+
+  <div id="displayText"></div>
+
+
+
+
+  <!-- JAVASCRIPT code  -->
+<script>
+var btnid=[0,0,0,0,0,0,0,0,0,0];
+  function calc() {
+    $.post("/calculate", function(data,status){
+       //var s+= data;
+
+         $("#gtotal").html(data.rtotal);
+         $("#ktotal").html(data.ktotal);
+         $("#ytotal").html(data.ytotal);
+         $("#stotal").html(data.stotal);
+       });
+
+  }
+
+
+
+    $(document).ready(function(){
+      $("#btncharge").click(function(){
+      if($('input:radio[name=offence]:checked').length) {
+            var checked_id = $('input:radio[name=offence]:checked').attr('id');
+
+            $.post("/charge",
+            {
+                id : checked_id
+            }, function(data,status){
+                var checked_radio = $('input:radio[name=offence]:checked').val();
+                calc();
+                document.getElementById("error").style.color = "green";
+                $("#error").html(""+ data +"" + "" + checked_radio +"");
+          });
+      }
+      else {
+        document.getElementById("error").style.color = "red";
+        $("#error").html("Please select your choice!");
+      }
+  });
+    calc();
+
+
+
+
+
+    //  $("#logbtn").click(function(){
+
+    loop();
+
+
+      });
+
+    //  });
+
+
+
+  // });
+  function loop() {
+    var btn=["btn1","btn2","btn3","btn4","btn5","btn6","btn7","btn8","btn9","btn10"];
+          $.post("/log", function (data,status){
+
+            var content = "<table class='indent-3'><caption>Your recent Transactions</caption><tr><th>S_No</th><th>Name</th><th>Reason</th><th>penalty</th><th>Action</th></tr>";
+             var j=1;
+
+             for (var i=data.length - 1; i>(data.length-11) && i>=0; i--){
+                 content += '<tr><td>' + j + '</td><td>' +  data[i].Name + '</td><td>' + data[i].Reason + '</td><td>' + data[i].penalty +'</td><td><button id="'+ btn[j-1] +'">delete</button></td></tr>';
+                 btnid[j-1]=data[i].S_No;
+                 j++;
+
+
+             }
+             content += "</table>";
+
+       $('#here_table').html(content);
+
+       var text1="Your row has been deleted. Refresh the page!";
+       $("#btn1").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[0]
+          }, function(data, status){
+  document.getElementById("displayText").innerHTML=text1;
+        })
+        loop();
+       });
+
+       $("#btn2").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[1]
+          }, function(data, status){
+  document.getElementById("displayText").innerHTML=text1;
+        })
+         loop();
+       });
+
+       $("#btn3").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[2]
+
+  }, function(data, status){
+        })
+         loop();
+       });
+
+       $("#btn4").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[3]
+          }, function(data, status){
+  document.getElementById("displayText").innerHTML=text1;
+        })
+         loop();
+       });
+
+       $("#btn5").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[4]
+          }, function(data, status){
+  document.getElementById("displayText").innerHTML=text1;
+        })
+         loop();
+       });
+
+       $("#btn6").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[5]
+          }, function(data, status){
+  document.getElementById("displayText").innerHTML=text1;
+        })
+         loop();
+       });
+
+       $("#btn7").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[6]
+          }, function(data, status){
+
+  document.getElementById("displayText").innerHTML=text1;
+        })
+         loop();
+       });
+
+       $("#btn8").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[7]
+          }, function(data, status){
+
+       document.getElementById("displayText").innerHTML=text1;
+        })
+         loop();
+       });
+
+       $("#btn9").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[8]
+          }, function(data, status){
+
+       document.getElementById("displayText").innerHTML=text1;
+        })
+         loop();
+       });
+
+       $("#btn10").click(function() {
+         $.post("/del",
+         {
+            serial : btnid[9]
+          }, function(data, status){
+
+
+          document.getElementById("displayText").innerHTML=text1;
+
+        })
+        loop();
+       });
+  });
+}
+
+</script>
+
+   </body>
+
+
+</html>
