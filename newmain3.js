@@ -4,7 +4,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var urlencodedParser=bodyParser.urlencoded({extended : false});
 
-var port    =   process.env.PORT || 22;
+var port    =   process.env.PORT || 8082;
 
 // MySQL connection
 
